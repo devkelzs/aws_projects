@@ -12,9 +12,9 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master',
-                    url: 'https://github.com/YOUR_USERNAME/doctor-appointment-app',
-                    credentialsId: 'YOUR-CREDENTIAL-ID'
+                git branch: 'main',
+                    url: 'https://github.com/devkelzs/aws_projects.git',
+                    credentialsId: 'devkelzs'
             }
         }
 
