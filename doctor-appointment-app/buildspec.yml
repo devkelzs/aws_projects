@@ -5,13 +5,15 @@ phases:
     runtime-versions:
       python: 3.10
     commands:
+      - cd app-subfolder
       - pip install -r requirements.txt
   build:
     commands:
       - pytest tests/test_basic.py
   post_build:
     commands:
-      - zip -r artifact.zip .
+      - cd ..
+      - zip -r artifact.zip app-subfolder
 artifacts:
   files:
     - artifact.zip
