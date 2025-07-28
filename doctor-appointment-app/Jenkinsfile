@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_REGION = 'us-west-2'  // Replace with your region
+        S3_BUCKET = 'doctor-app-artifacts'
+        BUILD_PROJECT = 'doctor-app-build'
+        DEPLOY_APP = 'doctor-app-deploy'
+        DEPLOY_GROUP = 'doctor-app-deploy-group'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'master',
+                    url: 'https://github.com/YOUR_USERNAME/doctor-appointment-app',
+                    credentialsId: 'YOUR-CREDENTIAL-ID'
+            }
+        }
+
+        stage('Trigger CodeBuild') {
+            steps {
+                script {
+                    def build = awsCodeBuild (
+                        projectName: env.BUILD_PROJECT,
+                        region: env.AWS_REGION
+                    )
+                    echo "CodeBuild started: ${build}"
+                }
+            }
+        }
+
+        stage('Deploy with CodeDeploy') {
+            steps {
+                script {
+                    sh """
+                    aws deploy create-deployment \
+                      --application-name ${DEPLOY_APP} \
+                      --deployment-group-name ${DEPLOY_GROUP} \
+                      --s3-location bucket=${S3_BUCKET},bundleType=zip,key=artifact.zip \
+                      --region ${AWS_REGION}
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Deployed successfully!'
+        }
+        failure {
+            echo '❌ Deployment failed!'
+        }
+    }
+}
