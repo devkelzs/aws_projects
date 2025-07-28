@@ -24,7 +24,7 @@ pipeline {
                     def build = awsCodeBuild (
                         projectName: env.BUILD_PROJECT,
                         region: env.AWS_REGION,
-                        credentialsType: 'jenkins',
+                        credentialsType: 'keys',
                         credentialsId: 'aws-codebuild-creds'
                     )
                     echo "CodeBuild started: ${build}"
