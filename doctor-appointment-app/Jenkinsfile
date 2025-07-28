@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        AWS_REGION = 'us-west-2'  // Replace with your region
+        AWS_REGION = 'us-west-2'
         S3_BUCKET = 'doctor-app-artifacts'
         BUILD_PROJECT = 'doctor-app-build'
         DEPLOY_APP = 'doctor-app-deploy'
@@ -23,7 +23,9 @@ pipeline {
                 script {
                     def build = awsCodeBuild (
                         projectName: env.BUILD_PROJECT,
-                        region: env.AWS_REGION
+                        region: env.AWS_REGION,
+                        credentialsType: 'jenkins',
+                        credentialsId: 'aws-codebuild-creds'
                     )
                     echo "CodeBuild started: ${build}"
                 }
