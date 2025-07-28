@@ -18,13 +18,23 @@ pipeline {
             }
         }
 
+        stage('Build Subfolder') {
+            steps {
+                dir('app-subfolder') {
+                    // Put your build commands here, e.g. npm install, mvn package, etc.
+                    echo "Building project in subfolder"
+                    sh 'ls -la'  // just to check contents, replace with real build commands
+                }
+            }
+        }
+
         stage('Trigger CodeBuild') {
             steps {
                 script {
                     def build = awsCodeBuild (
                         projectName: env.BUILD_PROJECT,
                         region: env.AWS_REGION,
-                        credentialsType: 'keys',
+                        credentialsType: 'jenkins',
                         credentialsId: 'aws-codebuild-creds'
                     )
                     echo "CodeBuild started: ${build}"
